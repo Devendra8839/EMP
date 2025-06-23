@@ -2,43 +2,126 @@
 
 import { useEffect, useState } from 'react';
 
+function toTitleCase(str: string) {
+  return str
+    .toLowerCase()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 export default function HomePage() {
   const [employee, setEmployee] = useState<any>(null);
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [filter, setFilter] = useState('');
 
   useEffect(() => {
     const stored = localStorage.getItem('employee');
     if (stored) {
-      setEmployee(JSON.parse(stored));
+      const emp = JSON.parse(stored);
+      setEmployee(emp);
+      fetchEmployees();
     } else {
-      window.location.href = '/login'; // or use next/router if needed
+      window.location.href = '/login';
     }
   }, []);
+
+  const fetchEmployees = async () => {
+    try {
+      const res = await fetch('http://localhost:3001/auth/employees');
+      const data = await res.json();
+
+      // If backend returns { employees: [...] }, extract the array
+      const employeeArray = Array.isArray(data) ? data : data.employees;
+      if (!Array.isArray(employeeArray)) {
+        console.error('Invalid data format from backend:', data);
+        return;
+      }
+
+      setEmployees(employeeArray);
+    } catch (error) {
+      console.error('Failed to fetch employees:', error);
+    }
+  };
+
+  const filteredEmployees = filter
+    ? employees.filter((emp) => emp.designation === filter)
+    : employees;
+
+  const designations = Array.from(new Set(employees.map((emp) => emp.designation)));
 
   return (
     <div>
       <nav style={styles.nav}>
-        <span>Welcome, {employee?.employeeName}</span>
-        <button style={styles.button} onClick={() => alert('Go to Create Department')}>
-          Create Department
-        </button>
+        <span>
+          Welcome, {employee?.name && toTitleCase(employee.name)} - {employee?.designation}
+        </span>
+        <div>
+          <button style={styles.button} onClick={() => alert('Go to Create Department')}>
+            Create Department
+          </button>
+          <button style={styles.button} onClick={() => alert('Go to Projects')}>
+            Projects
+          </button>
+          <button style={styles.button} onClick={() => alert('Go to Attendance')}>
+            Attendance
+          </button>
+        </div>
       </nav>
+
       <main style={styles.main}>
-        <h1>Home Page</h1>
-        <p>This is a protected page after login.</p>
+        <h2>All Employees</h2>
+
+        <label>
+          Filter by Designation:{' '}
+          <select onChange={(e) => setFilter(e.target.value)} value={filter}>
+            <option value="">All</option>
+            {designations.map((dsgn) => (
+              <option key={dsgn} value={dsgn}>
+                {dsgn}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <table style={styles.table}>
+          <thead>
+            <tr>
+              <th style={styles.th}>Name</th>
+              <th style={styles.th}>Email</th>
+              <th style={styles.th}>Phone</th>
+              <th style={styles.th}>Department</th>
+              <th style={styles.th}>Designation</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredEmployees.map((emp) => (
+              <tr key={emp.id}>
+                <td style={styles.td}>{emp.employeeName}</td>
+                <td style={styles.td}>{emp.email}</td>
+                <td style={styles.td}>{emp.phone}</td>
+                <td style={styles.td}>{emp.department}</td>
+                <td style={styles.td}>{emp.designation}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </main>
     </div>
   );
 }
 
-const styles = {
+const styles: { [key: string]: React.CSSProperties } = {
   nav: {
     display: 'flex',
     justifyContent: 'space-between',
+    alignItems: 'center',
     padding: '20px',
     backgroundColor: '#222',
     color: '#fff',
   },
   button: {
+    marginLeft: '10px',
     padding: '10px',
     backgroundColor: '#0070f3',
     border: 'none',
@@ -50,5 +133,20 @@ const styles = {
   main: {
     padding: '40px',
     textAlign: 'center',
+  },
+  table: {
+    width: '100%',
+    marginTop: '20px',
+    borderCollapse: 'collapse',
+  },
+  th: {
+    borderBottom: '2px solid #ccc',
+    padding: '10px',
+    textAlign: 'left',
+  },
+  td: {
+    borderBottom: '1px solid #eee',
+    padding: '10px',
+    textAlign: 'left',
   },
 };

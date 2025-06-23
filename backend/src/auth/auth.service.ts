@@ -69,4 +69,18 @@ export class AuthService {
       },
     };
   }
+
+  async getAllEmployees() {
+    return this.prisma.employee.findMany({
+      select: {
+        id: true,
+        employeeName: true,
+        email: true,
+        phone: true,
+        department: true,
+        designation: true,
+      },
+    });
+  }
+
 }
