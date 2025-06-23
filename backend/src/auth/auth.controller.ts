@@ -1,5 +1,3 @@
-// src/auth/auth.controller.ts
-
 import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
@@ -10,5 +8,10 @@ export class AuthController {
   @Post('signup')
   signup(@Body() body: any) {
     return this.authService.signup(body);
+  }
+
+  @Post('login')
+  login(@Body() body: any) {
+    return this.authService.login(body);
   }
 }
