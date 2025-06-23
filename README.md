@@ -139,3 +139,28 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+## Setup Instructions
+```bash
+
+=== Next.js setup ===
+npx create-next-app my-next-app
+cd my-next-app
+npm install prisma --save-dev
+npm install @prisma/client
+npx prisma init
+npx prisma migrate dev --name init
+npx prisma generate
+
+=== Nest.js setup ===
+npx @nestjs/cli new my-nest-app
+cd my-nest-app
+npm install @prisma/client
+npm install prisma --save-dev
+npx prisma init
+npx prisma migrate dev --name init
+npx prisma generate
+```
+```
+
+

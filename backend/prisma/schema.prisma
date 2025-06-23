@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+model Department {
+  DepartmentID Int       @id @default(autoincrement())
+  Name         String
+  employees    Employee[]
+}
+model Employee {
+  EmployeeID   Int              @id @default(autoincrement())
+  Name         String
+  Email        String           @unique
+  Phone        String?
+  Designation  String
+  Department   Department       @relation(fields: [DepartmentID], references: [DepartmentID])
+  DepartmentID Int
+  projects        EmployeeProject[]
+  attendances     Attendance[]
+  leaveRequests   LeaveRequest[]
+  managedProjects Project[]     @relation("ManagerProjects")
+}
+model Project {
+  ProjectID Int       @id @default(autoincrement())
+  Name      String
+  StartDate DateTime
+  EndDate   DateTime
+  Manager   Employee?  @relation("ManagerProjects", fields: [ManagerID], references: [EmployeeID])
+  ManagerID Int?
+  employees EmployeeProject[]
+}
+model EmployeeProject {
+  EmployeeID     Int
+  ProjectID      Int
+  RoleInProject  String
+  employee Employee @relation(fields: [EmployeeID], references: [EmployeeID])
+  project  Project  @relation(fields: [ProjectID], references: [ProjectID])
+  @@id([EmployeeID, ProjectID])
+}
+model Attendance {
+  AttendanceID Int      @id @default(autoincrement())
+  Employee     Employee @relation(fields: [EmployeeID], references: [EmployeeID])
+  EmployeeID   Int
+  Date         DateTime
+  CheckInTime  DateTime?
+  CheckOutTime DateTime?
+  Status       AttendanceStatus
+}
+model LeaveRequest {
+  LeaveID     Int      @id @default(autoincrement())
+  Employee    Employee @relation(fields: [EmployeeID], references: [EmployeeID])
+  EmployeeID  Int
+  StartDate   DateTime
+  EndDate     DateTime
+  LeaveType   LeaveType
+  Status      LeaveStatus
+}
+// Enums
+enum AttendanceStatus {
+  Present
+  Absent
+  Leave
+  Remote
+  Late
+}
+enum LeaveType {
+  Sick
+  Casual
+  Earned
+}
+enum LeaveStatus {
+  Pending
+  Approved
+  Rejected
+}
