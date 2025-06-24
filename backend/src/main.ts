@@ -7,10 +7,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({ origin: '*' });
 
-  // ✅ Enable validation globally
   app.useGlobalPipes(
     new ValidationPipe({
-      transform: true, // auto transform JSON strings to numbers
+      transform: true,
     })
   );
 

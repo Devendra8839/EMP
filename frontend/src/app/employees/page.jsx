@@ -68,7 +68,7 @@ export default function EmployeeList() {
   };
 
   const handleEdit = (emp) => {
-    setEditEmployee({ ...emp }); // shallow copy
+    setEditEmployee({ ...emp }); 
   };
 
   const handleEditChange = (e) => {
@@ -140,7 +140,6 @@ export default function EmployeeList() {
       <table className="min-w-full border border-gray-200">
         <thead>
           <tr>
-            <th className="p-2 border-b">ID</th>
             <th className="p-2 border-b">Name</th>
             <th className="p-2 border-b">Email</th>
             <th className="p-2 border-b">Designation</th>
@@ -188,7 +187,6 @@ export default function EmployeeList() {
                 </>
               ) : (
                 <>
-                  <td className="p-2 border-b">{emp.EmployeeID}</td>
                   <td className="p-2 border-b">{emp.Name}</td>
                   <td className="p-2 border-b">{emp.Email}</td>
                   <td className="p-2 border-b">{emp.Designation}</td>
