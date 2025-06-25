@@ -110,5 +110,20 @@ export class AuthService {
     });
   }
 
+  async deleteEmployee(id: string) {
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+      throw new BadRequestException('Invalid employee ID');
+    }
 
+    const employee = await this.prisma.employee.findUnique({ where: { id: numericId } });
+
+    if (!employee) {
+      throw new BadRequestException('Employee not found');
+    }
+
+    await this.prisma.employee.delete({ where: { id: numericId } });
+
+    return { message: 'Employee deleted successfully' };
+  }
 }

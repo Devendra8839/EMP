@@ -1,17 +1,20 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 interface SignupFormProps {
   submitUrl?: string;
   title?: string;
   buttonLabel?: string;
+  redirectPath?: string;
 }
 
 export default function SignupForm({
   submitUrl = 'http://localhost:3001/auth/signup',
   title = 'Sign Up',
   buttonLabel = 'Sign Up',
+  redirectPath  = '/login',
 }: SignupFormProps) {
   const [form, setForm] = useState({
     name: '',
@@ -23,6 +26,7 @@ export default function SignupForm({
   });
 
   const [departments, setDepartments] = useState<string[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     fetch('http://localhost:3001/auth/departments')
@@ -45,6 +49,8 @@ export default function SignupForm({
 
       const data = await res.json();
       alert(data.message || JSON.stringify(data));
+      
+      router.push(redirectPath);
     } catch (error) {
       console.error('Form submit error:', error);
       alert('Submission failed. Check console for details.');

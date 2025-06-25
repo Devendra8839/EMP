@@ -44,6 +44,26 @@ export default function HomePage() {
     }
   };
 
+  const handleDelete = async (id: string) => {
+    const confirmed = confirm('Are you sure you want to delete this employee?');
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch(`http://localhost:3001/auth/employees/${id}`, {
+        method: 'DELETE',
+      });
+
+      const data = await res.json();
+      alert(data.message || 'Deleted');
+
+      // Refresh employee list or filter out deleted one
+      setEmployees((prev) => prev.filter((emp) => emp.id !== id));
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('Failed to delete employee.');
+    }
+  };
+
   const filteredEmployees = filter
     ? employees.filter((emp) => emp.designation === filter)
     : employees;
@@ -86,7 +106,6 @@ export default function HomePage() {
             ))}
           </select>
         </label>
-
         <table style={styles.table}>
           <thead>
             <tr>
@@ -95,6 +114,7 @@ export default function HomePage() {
               <th style={styles.th}>Phone</th>
               <th style={styles.th}>Department</th>
               <th style={styles.th}>Designation</th>
+              <th style={styles.th}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -105,6 +125,14 @@ export default function HomePage() {
                 <td style={styles.td}>{emp.phone}</td>
                 <td style={styles.td}>{emp.department}</td>
                 <td style={styles.td}>{emp.designation}</td>
+                <td style={styles.td}>
+                  <button
+                    style={styles.deleteButton}
+                    onClick={() => handleDelete(emp.id)}
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -152,4 +180,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: '10px',
     textAlign: 'left',
   },
+  deleteButton: {
+    padding: '6px 12px',
+    backgroundColor: 'red',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+  }
 };

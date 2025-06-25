@@ -1,6 +1,7 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Get } from '@nestjs/common';
+import { Delete, Param } from '@nestjs/common';
 
 @Controller('auth')
 export class AuthController {
@@ -31,4 +32,8 @@ export class AuthController {
     return this.authService.getDepartments();
   }
 
+  @Delete('employees/:id')
+  async deleteEmployee(@Param('id') id: string) {
+    return this.authService.deleteEmployee(id);
+  }
 }
