@@ -24,3 +24,9 @@ model Employee {
   phone       String
   createdAt   DateTime @default(now())
 }
+
+model Department {
+  id          Int     @id @default(autoincrement())
+  departmentName String @unique
+  createdAt   DateTime @default(now())
+}

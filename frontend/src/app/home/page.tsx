@@ -57,8 +57,11 @@ export default function HomePage() {
           Welcome, {employee?.name && toTitleCase(employee.name)} - {employee?.designation}
         </span>
         <div>
-          <button style={styles.button} onClick={() => alert('Go to Create Department')}>
+          <button style={styles.button} onClick={() => window.location.href = '/department/'}>
             Create Department
+          </button>
+          <button style={styles.button} onClick={() => window.location.href = '/signup/'}>
+            Create Employee
           </button>
           <button style={styles.button} onClick={() => alert('Go to Projects')}>
             Projects

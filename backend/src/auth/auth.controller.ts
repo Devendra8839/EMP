@@ -21,4 +21,14 @@ export class AuthController {
     return this.authService.getAllEmployees();
   }
 
+  @Post('create-department')
+  async createDepartment(@Body() body: { departmentName: string }) {
+    return this.authService.createDepartment(body);
+  }
+
+  @Get('departments')
+  async getDepartments() {
+    return this.authService.getDepartments();
+  }
+
 }

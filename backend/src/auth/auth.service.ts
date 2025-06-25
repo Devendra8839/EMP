@@ -83,4 +83,32 @@ export class AuthService {
     });
   }
 
+  async createDepartment(data: { departmentName: string }) {
+    // const existing = await this.prisma.department.findUnique({
+    //   where: { departmentName: data.departmentName },
+    // });
+
+    // if (existing) {
+    //   throw new BadRequestException('Department already exists');
+    // }
+
+    const department = await this.prisma.department.create({
+      data: {
+        departmentName: data.departmentName,
+      },
+    });
+
+    return {
+      message: 'Department created successfully',
+      department,
+    };
+  }
+
+  async getDepartments() {
+    return this.prisma.department.findMany({
+      select: { departmentName: true },
+    });
+  }
+
+
 }
