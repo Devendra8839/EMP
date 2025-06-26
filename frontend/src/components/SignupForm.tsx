@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, CSSProperties } from 'react';
 
 interface SignupFormProps {
   submitUrl?: string;
@@ -14,7 +14,7 @@ export default function SignupForm({
   submitUrl = 'http://localhost:3001/auth/signup',
   title = 'Sign Up',
   buttonLabel = 'Sign Up',
-  redirectPath  = '/login',
+  redirectPath = '/login',
 }: SignupFormProps) {
   const [form, setForm] = useState({
     name: '',
@@ -49,7 +49,6 @@ export default function SignupForm({
 
       const data = await res.json();
       alert(data.message || JSON.stringify(data));
-      
       router.push(redirectPath);
     } catch (error) {
       console.error('Form submit error:', error);
@@ -73,7 +72,6 @@ export default function SignupForm({
           />
         ))}
 
-        {/* Department Dropdown */}
         <select
           required
           value={form.department}
@@ -86,7 +84,6 @@ export default function SignupForm({
           ))}
         </select>
 
-        {/* Designation input */}
         <input
           type="text"
           placeholder="Designation"
@@ -96,7 +93,6 @@ export default function SignupForm({
           style={styles.input}
         />
 
-        {/* Password input */}
         <input
           type="password"
           placeholder="Password"
@@ -112,9 +108,10 @@ export default function SignupForm({
   );
 }
 
+// Capitalize helper
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-const styles = {
+const styles: { [key: string]: CSSProperties } = {
   container: {
     maxWidth: '400px',
     margin: '80px auto',
@@ -134,6 +131,8 @@ const styles = {
     border: '1px solid #bbb',
     borderRadius: '6px',
     fontSize: '16px',
+    color: 'white',
+    backgroundColor: 'transparent',
   },
   button: {
     padding: '10px',

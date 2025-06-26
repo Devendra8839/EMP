@@ -89,6 +89,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     border: '1px solid #bbb',
     borderRadius: '6px',
     fontSize: '16px',
+    color: 'white',
   },
   button: {
     padding: '10px',

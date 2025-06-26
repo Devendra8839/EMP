@@ -2,6 +2,7 @@
 'use client';
 
 import { useState } from 'react';
+import { CSSProperties } from 'react';
 
 export default function DepartmentPage() {
   const [departmentName, setName] = useState('');
@@ -13,6 +14,7 @@ export default function DepartmentPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ departmentName }),
     });
+
     const data = await res.json();
     alert(data.message || 'Department created');
     setName('');
@@ -24,19 +26,25 @@ export default function DepartmentPage() {
       <form onSubmit={handleSubmit} style={styles.form}>
         <label style={styles.label}>Department Name</label>
         <input
-          type="text"
+          type='text'
           value={departmentName}
           onChange={(e) => setName(e.target.value)}
           required
           style={styles.input}
         />
-        <button type="submit" style={styles.button}>Submit</button>
+        <button type='submit' style={styles.button}>Submit</button>
       </form>
     </div>
   );
 }
 
-const styles = {
+const styles: {
+  container: CSSProperties;
+  form: CSSProperties;
+  label: CSSProperties;
+  input: CSSProperties;
+  button: CSSProperties;
+} = {
   container: {
     maxWidth: '400px',
     margin: '60px auto',
@@ -57,6 +65,7 @@ const styles = {
     padding: '10px',
     borderRadius: '6px',
     border: '1px solid #ccc',
+    color: 'white',
   },
   button: {
     padding: '10px',
