@@ -143,7 +143,7 @@ export default function HomePage() {
                 <td style={styles.td}>{emp.employeeName}</td>
                 <td style={styles.td}>{emp.email}</td>
                 <td style={styles.td}>{emp.phone}</td>
-                <td style={styles.td}>{emp.department}</td>
+                <td style={styles.td}>{emp.department?.departmentName || 'N/A'}</td>
                 <td style={styles.td}>{emp.designation}</td>
                 <td style={styles.td}>
                   {isAdmin && (

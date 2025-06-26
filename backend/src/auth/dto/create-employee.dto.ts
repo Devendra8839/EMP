@@ -1,4 +1,5 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+// src/auth/dto/create-employee.dto.ts
+import { IsEmail, IsNotEmpty, IsString, IsEnum, IsInt } from 'class-validator';
 
 export enum DesignationEnum {
   ADMIN = 'admin',
@@ -13,23 +14,21 @@ export class CreateEmployeeDto {
   employeeName: string;
 
   @IsNotEmpty()
-  @IsEmail()
-  email: string;
-
-  @IsNotEmpty()
   @IsString()
   password: string;
+
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
 
   @IsNotEmpty()
   @IsString()
   phone: string;
 
   @IsNotEmpty()
-  @IsString()
-  department: string;
+  @IsInt()
+  departmentId: number;
 
-  @IsEnum(DesignationEnum, {
-    message: `designation must be one of: ${Object.values(DesignationEnum).join(', ')}`,
-  })
+  @IsEnum(DesignationEnum)
   designation: DesignationEnum;
 }

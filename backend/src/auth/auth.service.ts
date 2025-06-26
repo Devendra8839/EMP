@@ -10,37 +10,33 @@ export class AuthService {
 
   async signup(data: CreateEmployeeDto) {
     if (!data.employeeName || !data.email || !data.password) {
-      throw new BadRequestException('Missing required fields');
+      throw new Error('Missing required fields');
     }
-
-    const existing = await this.prisma.employee.findUnique({
-      where: { email: data.email },
-    });
-
-    if (existing) {
-      throw new BadRequestException('Email already in use');
-    }
-
-    const hashedPassword = await bcrypt.hash(data.password, 10);
 
     const employee = await this.prisma.employee.create({
       data: {
         employeeName: data.employeeName,
         email: data.email,
-        department: data.department,
-        designation: data.designation,
+        password: data.password,
         phone: data.phone,
-        password: hashedPassword,
+        designation: data.designation,
+        department: {
+          connect: { id: data.departmentId },
+        },
+      },
+      include: {
+        department: true,
       },
     });
 
-    return { message: 'Signup successful', employeeId: employee.id };
+    return employee;
   }
 
 
   async login(data: { email: string; password: string }) {
     const employee = await this.prisma.employee.findUnique({
       where: { email: data.email },
+      include: { department: true },
     });
 
     if (!employee) {
@@ -59,7 +55,7 @@ export class AuthService {
         id: employee.id,
         name: employee.employeeName,
         email: employee.email,
-        department: employee.department,
+        department: employee.department?.departmentName,
         designation: employee.designation,
         phone: employee.phone,
       },
@@ -73,11 +69,16 @@ export class AuthService {
         employeeName: true,
         email: true,
         phone: true,
-        department: true,
         designation: true,
+        department: {
+          select: {
+            departmentName: true,
+          },
+        },
       },
     });
   }
+
 
   async createDepartment(data: { departmentName: string }) {
     // const existing = await this.prisma.department.findUnique({

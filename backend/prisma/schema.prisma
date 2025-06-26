@@ -15,18 +15,20 @@ datasource db {
 }
 
 model Employee {
-  id          Int     @id @default(autoincrement())
-  employeeName        String
-  email       String  @unique
-  department  String
-  designation String
-  password    String
-  phone       String
-  createdAt   DateTime @default(now())
+  id           Int        @id @default(autoincrement())
+  employeeName String
+  email        String     @unique
+  designation  String
+  password     String
+  phone        String
+  createdAt    DateTime   @default(now())
+
+  departmentId Int
+  department   Department @relation(fields: [departmentId], references: [id])
 }
 
 model Department {
-  id          Int     @id @default(autoincrement())
-  departmentName String @unique
-  createdAt   DateTime @default(now())
+  id             Int        @id @default(autoincrement())
+  departmentName String     @unique
+  employees      Employee[] // 1:N relationship
 }
