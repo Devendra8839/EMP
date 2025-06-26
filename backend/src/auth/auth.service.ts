@@ -8,16 +8,27 @@ import { CreateEmployeeDto } from './dto/create-employee.dto';
 export class AuthService {
   private prisma = new PrismaClient();
 
+  // SIGNUP
   async signup(data: CreateEmployeeDto) {
     if (!data.employeeName || !data.email || !data.password) {
-      throw new Error('Missing required fields');
+      throw new BadRequestException('Missing required fields');
     }
+
+    const existing = await this.prisma.employee.findUnique({
+      where: { email: data.email },
+    });
+
+    if (existing) {
+      throw new BadRequestException('Email already in use');
+    }
+
+    const hashedPassword = await bcrypt.hash(data.password, 10);
 
     const employee = await this.prisma.employee.create({
       data: {
         employeeName: data.employeeName,
         email: data.email,
-        password: data.password,
+        password: hashedPassword,
         phone: data.phone,
         designation: data.designation,
         department: {
@@ -29,10 +40,20 @@ export class AuthService {
       },
     });
 
-    return employee;
+    return {
+      message: 'Employee created successfully',
+      employee: {
+        id: employee.id,
+        name: employee.employeeName,
+        email: employee.email,
+        department: employee.department?.departmentName,
+        designation: employee.designation,
+        phone: employee.phone,
+      },
+    };
   }
 
-
+  // LOGIN
   async login(data: { email: string; password: string }) {
     const employee = await this.prisma.employee.findUnique({
       where: { email: data.email },
@@ -44,7 +65,6 @@ export class AuthService {
     }
 
     const passwordMatch = await bcrypt.compare(data.password, employee.password);
-
     if (!passwordMatch) {
       throw new BadRequestException('Invalid email or password');
     }
@@ -62,6 +82,7 @@ export class AuthService {
     };
   }
 
+  // GET ALL EMPLOYEES
   async getAllEmployees() {
     return this.prisma.employee.findMany({
       select: {
@@ -79,15 +100,15 @@ export class AuthService {
     });
   }
 
-
+  // CREATE DEPARTMENT
   async createDepartment(data: { departmentName: string }) {
-    // const existing = await this.prisma.department.findUnique({
-    //   where: { departmentName: data.departmentName },
-    // });
+    const existing = await this.prisma.department.findUnique({
+      where: { departmentName: data.departmentName },
+    });
 
-    // if (existing) {
-    //   throw new BadRequestException('Department already exists');
-    // }
+    if (existing) {
+      throw new BadRequestException('Department already exists');
+    }
 
     const department = await this.prisma.department.create({
       data: {
@@ -101,19 +122,21 @@ export class AuthService {
     };
   }
 
+  // GET DEPARTMENTS
   async getDepartments() {
-    return this.prisma.department.findMany({
-      select: { departmentName: true },
-    });
+    return this.prisma.department.findMany();
   }
 
+  // DELETE EMPLOYEE
   async deleteEmployee(id: string) {
     const numericId = parseInt(id, 10);
     if (isNaN(numericId)) {
       throw new BadRequestException('Invalid employee ID');
     }
 
-    const employee = await this.prisma.employee.findUnique({ where: { id: numericId } });
+    const employee = await this.prisma.employee.findUnique({
+      where: { id: numericId },
+    });
 
     if (!employee) {
       throw new BadRequestException('Employee not found');
@@ -124,11 +147,11 @@ export class AuthService {
     return { message: 'Employee deleted successfully' };
   }
 
+  // UPDATE EMPLOYEE
   async updateEmployee(id: string, updateEmployeeDto: UpdateEmployeeDto) {
     return this.prisma.employee.update({
-      where: { id: parseInt(id) }, // assuming id is numeric
+      where: { id: parseInt(id) },
       data: updateEmployeeDto,
     });
   }
-
 }

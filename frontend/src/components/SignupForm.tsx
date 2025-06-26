@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function SignUpForm({
   mode,
@@ -12,26 +12,46 @@ export default function SignUpForm({
   const [employeeName, setEmployeeName] = useState(employeeData?.employeeName || '');
   const [email, setEmail] = useState(employeeData?.email || '');
   const [phone, setPhone] = useState(employeeData?.phone || '');
+  const [password, setPassword] = useState(''); // ✅ Added
   const [designation, setDesignation] = useState(employeeData?.designation || '');
-  const [department, setDepartment] = useState(employeeData?.department || '');
+  const [department, setDepartment] = useState(employeeData?.department?.id || '');
+  const [departments, setDepartments] = useState([]);
 
-  const designationOptions = ['admin', 'manager', 'qa', 'developer'];
+  useEffect(() => {
+    async function fetchDepartments() {
+      try {
+        const res = await fetch('http://localhost:3001/auth/departments');
+        const data = await res.json();
+        setDepartments(data);
+      } catch (err) {
+        console.error('Failed to fetch departments', err);
+      }
+    }
+
+    fetchDepartments();
+  }, []);
+
+  const designationOptions = ['admin', 'manager', 'qa', 'backend-developer', 'frontend-developer'];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const payload = {
+    const payload: any = {
       employeeName,
       email,
       phone,
       designation,
-      department,
+      departmentId: parseInt(department),
     };
+
+    if (mode === 'create') {
+      payload.password = password; // ✅ Only send password on create
+    }
 
     const url =
       mode === 'edit'
         ? `http://localhost:3001/auth/employees/${employeeData.id}`
-        : 'http://localhost:3001/auth/employees';
+        : 'http://localhost:3001/auth/signup';
 
     const method = mode === 'edit' ? 'PUT' : 'POST';
 
@@ -46,47 +66,147 @@ export default function SignUpForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: 500, margin: '0 auto' }}>
-      <input
-        value={employeeName}
-        onChange={(e) => setEmployeeName(e.target.value)}
-        placeholder="Name"
-        required
-      />
-      <input
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-        required
-      />
-      <input
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-        placeholder="Phone"
-        required
-      />
-      <select
-        name="designation"
-        value={designation}
-        onChange={(e) => setDesignation(e.target.value)}
-        required
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: '100vh',
+      backgroundColor: '#f3f4f6',
+      padding: '2rem',
+    }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          backgroundColor: 'white',
+          padding: '2rem',
+          borderRadius: '12px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+          width: '100%',
+          maxWidth: '500px',
+        }}
       >
-        <option value="">Select designation</option>
-        {designationOptions.map((option) => (
-          <option key={option} value={option}>
-            {option.charAt(0).toUpperCase() + option.slice(1)}
-          </option>
+        <h2 style={{ marginBottom: '1.5rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: '600' }}>
+          {mode === 'edit' ? 'Edit Employee' : 'Create Employee'}
+        </h2>
+
+        {/* Input Fields */}
+        {[
+          { label: 'Name', value: employeeName, onChange: setEmployeeName },
+          { label: 'Email', value: email, onChange: setEmail },
+          { label: 'Phone', value: phone, onChange: setPhone },
+        ].map((field, idx) => (
+          <div key={idx} style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
+              {field.label}
+            </label>
+            <input
+              type="text"
+              value={field.value}
+              onChange={(e) => field.onChange(e.target.value)}
+              required
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                borderRadius: '8px',
+                border: '1px solid #ccc',
+                fontSize: '1rem',
+              }}
+            />
+          </div>
         ))}
-      </select>
-      <input
-        value={department}
-        onChange={(e) => setDepartment(e.target.value)}
-        placeholder="Department"
-        required
-      />
-      <button type="submit">
-        {mode === 'edit' ? 'Update Employee' : 'Create Employee'}
-      </button>
-    </form>
+
+        {/* ✅ Password Field - only on create */}
+        {mode === 'create' && (
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
+              Password
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                borderRadius: '8px',
+                border: '1px solid #ccc',
+                fontSize: '1rem',
+              }}
+            />
+          </div>
+        )}
+
+        {/* Designation */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
+            Designation
+          </label>
+          <select
+            value={designation}
+            onChange={(e) => setDesignation(e.target.value)}
+            required
+            style={{
+              width: '100%',
+              padding: '0.75rem',
+              borderRadius: '8px',
+              border: '1px solid #ccc',
+              fontSize: '1rem',
+            }}
+          >
+            <option value="">Select designation</option>
+            {designationOptions.map((option) => (
+              <option key={option} value={option}>
+                {option.charAt(0).toUpperCase() + option.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Department */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
+            Department
+          </label>
+          <select
+            value={department}
+            onChange={(e) => setDepartment(e.target.value)}
+            required
+            style={{
+              width: '100%',
+              padding: '0.75rem',
+              borderRadius: '8px',
+              border: '1px solid #ccc',
+              fontSize: '1rem',
+            }}
+          >
+            <option value="">Select Department</option>
+            {departments.map((dept: any) => (
+              <option key={dept.id} value={dept.id}>
+                {dept.departmentName}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <button
+          type="submit"
+          style={{
+            width: '100%',
+            padding: '0.75rem',
+            backgroundColor: '#2563eb',
+            color: 'white',
+            fontSize: '1rem',
+            fontWeight: '600',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            transition: 'background-color 0.3s',
+          }}
+        >
+          {mode === 'edit' ? 'Update' : 'Create'}
+        </button>
+      </form>
+    </div>
   );
 }

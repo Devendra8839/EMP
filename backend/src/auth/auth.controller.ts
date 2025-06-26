@@ -14,6 +14,7 @@ export class AuthController {
 
   @Post('login')
   login(@Body() body: any) {
+    console.log('Login attempt:', body);  // Add this
     return this.authService.login(body);
   }
 
@@ -23,8 +24,8 @@ export class AuthController {
   }
 
   @Post('create-department')
-  async createDepartment(@Body() body: { departmentName: string }) {
-    return this.authService.createDepartment(body);
+  async createDepartment(@Body() data: { departmentName: string }) {
+    return this.authService.createDepartment(data);
   }
 
   @Get('departments')

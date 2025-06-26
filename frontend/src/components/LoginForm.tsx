@@ -25,7 +25,6 @@ export default function LoginForm() {
 
       const data = await res.json();
       alert(data.message);
-
       localStorage.setItem('employee', JSON.stringify(data.employee));
       router.push('/home');
     } catch (err) {
@@ -35,72 +34,90 @@ export default function LoginForm() {
   };
 
   return (
-    <div style={styles.container}>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <label htmlFor="email" style={styles.label}>Email</label>
-        <input
-          id="email"
-          type="email"
-          placeholder="Enter your email"
-          required
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-          style={styles.input}
-        />
+    <div style={styles.page}>
+      <div style={styles.container}>
+        <h2 style={styles.heading}>Employee Login</h2>
+        <form onSubmit={handleSubmit} style={styles.form}>
+          <label htmlFor="email" style={styles.label}>Email</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="Enter your email"
+            required
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            style={styles.input}
+          />
 
-        <label htmlFor="password" style={styles.label}>Password</label>
-        <input
-          id="password"
-          type="password"
-          placeholder="Enter your password"
-          required
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-          style={styles.input}
-        />
+          <label htmlFor="password" style={styles.label}>Password</label>
+          <input
+            id="password"
+            type="password"
+            placeholder="Enter your password"
+            required
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            style={styles.input}
+          />
 
-        <button type="submit" style={styles.button}>Login</button>
-      </form>
+          <button type="submit" style={styles.button}>Login</button>
+        </form>
+      </div>
     </div>
   );
 }
 
 const styles: { [key: string]: React.CSSProperties } = {
+  page: {
+    minHeight: '100vh',
+    backgroundColor: '#0d1117',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   container: {
+    width: '100%',
     maxWidth: '400px',
-    margin: '80px auto',
-    padding: '30px',
-    border: '1px solid #ccc',
-    borderRadius: '12px',
+    padding: '32px',
+    borderRadius: '16px',
+    backgroundColor: '#161b22',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
+  },
+  heading: {
+    marginBottom: '24px',
+    color: '#f0f6fc',
+    fontSize: '24px',
+    fontWeight: 'bold',
     textAlign: 'center',
-    backgroundColor: 'black',
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
   },
+  label: {
+    marginBottom: '6px',
+    fontSize: '14px',
+    color: '#c9d1d9',
+    fontWeight: 500,
+  },
   input: {
-    marginBottom: '15px',
-    padding: '10px',
-    border: '1px solid #bbb',
-    borderRadius: '6px',
-    fontSize: '16px',
+    marginBottom: '16px',
+    padding: '12px',
+    borderRadius: '8px',
+    border: '1px solid #30363d',
+    backgroundColor: '#0d1117',
+    color: '#f0f6fc',
+    fontSize: '15px',
   },
   button: {
-    padding: '10px',
-    backgroundColor: '#0070f3',
+    padding: '12px',
+    backgroundColor: '#238636',
+    color: '#ffffff',
     border: 'none',
-    borderRadius: '6px',
-    color: 'white',
+    borderRadius: '8px',
     fontSize: '16px',
+    fontWeight: 600,
     cursor: 'pointer',
-  },
-  label: {
-    textAlign: 'left',
-    marginBottom: '5px',
-    fontWeight: 'bold',
-    fontSize: '14px',
-    color: 'white',
+    transition: 'background-color 0.2s ease-in-out',
   },
 };
