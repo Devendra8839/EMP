@@ -10,7 +10,7 @@ export enum DesignationEnum {
 export class CreateEmployeeDto {
   @IsNotEmpty()
   @IsString()
-  name: string;
+  employeeName: string;
 
   @IsNotEmpty()
   @IsEmail()

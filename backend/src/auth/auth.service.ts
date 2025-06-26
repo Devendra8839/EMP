@@ -2,20 +2,14 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
+import { CreateEmployeeDto } from './dto/create-employee.dto';
 
 @Injectable()
 export class AuthService {
   private prisma = new PrismaClient();
 
-  async signup(data: {
-    name: string;
-    email: string;
-    department: string;
-    designation: string;
-    password: string;
-    phone: string;
-  }) {
-    if (!data.name || !data.email || !data.password) {
+  async signup(data: CreateEmployeeDto) {
+    if (!data.employeeName || !data.email || !data.password) {
       throw new BadRequestException('Missing required fields');
     }
 
@@ -31,7 +25,7 @@ export class AuthService {
 
     const employee = await this.prisma.employee.create({
       data: {
-        employeeName: data.name,
+        employeeName: data.employeeName,
         email: data.email,
         department: data.department,
         designation: data.designation,
@@ -42,6 +36,7 @@ export class AuthService {
 
     return { message: 'Signup successful', employeeId: employee.id };
   }
+
 
   async login(data: { email: string; password: string }) {
     const employee = await this.prisma.employee.findUnique({
