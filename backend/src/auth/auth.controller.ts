@@ -36,4 +36,9 @@ export class AuthController {
   async deleteEmployee(@Param('id') id: string) {
     return this.authService.deleteEmployee(id);
   }
+
+  @Put('employees/:id')
+  async updateEmployee(@Param('id') id: string, @Body() updateDto: UpdateEmployeeDto) {
+    return this.authService.updateEmployee(id, updateDto);
+  }
 }

@@ -126,4 +126,11 @@ export class AuthService {
 
     return { message: 'Employee deleted successfully' };
   }
+
+  async updateEmployee(id: string, updateDto: UpdateEmployeeDto) {
+    return this.prisma.employee.update({
+      where: { id },
+      data: updateDto,
+    });
+  }
 }
