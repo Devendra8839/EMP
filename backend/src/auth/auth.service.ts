@@ -1,6 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaClient } from '../../generated/prisma';
 import * as bcrypt from 'bcrypt';
+import { UpdateEmployeeDto } from './dto/update-employee.dto';
 
 @Injectable()
 export class AuthService {
@@ -127,10 +128,11 @@ export class AuthService {
     return { message: 'Employee deleted successfully' };
   }
 
-  async updateEmployee(id: string, updateDto: UpdateEmployeeDto) {
+  async updateEmployee(id: string, updateEmployeeDto: UpdateEmployeeDto) {
     return this.prisma.employee.update({
-      where: { id },
-      data: updateDto,
+      where: { id: parseInt(id) }, // assuming id is numeric
+      data: updateEmployeeDto,
     });
   }
+
 }

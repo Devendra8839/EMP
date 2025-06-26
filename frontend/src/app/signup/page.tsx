@@ -20,7 +20,16 @@ export default function SignupPage() {
     const editData = localStorage.getItem('editEmployee');
     if (editData) {
       const parsed = JSON.parse(editData);
-      setFormData(parsed);
+
+      setFormData({
+        employeeName: parsed.employeeName || '',
+        email: parsed.email || '',
+        phone: parsed.phone || '',
+        department: parsed.department || '',
+        designation: parsed.designation || '',
+        password: '', // never pre-fill passwords
+      });
+
       setEditingId(parsed.id);
       localStorage.removeItem('editEmployee');
     }
@@ -30,31 +39,37 @@ export default function SignupPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const method = editingId ? 'PUT' : 'POST';
     const url = editingId
       ? `http://localhost:3001/auth/employees/${editingId}`
       : 'http://localhost:3001/auth/signup';
 
-    try {
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+    const method = editingId ? 'PUT' : 'POST';
+
+    const response = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await response.json();
+    alert(data.message || (editingId ? 'Employee updated' : 'Employee created'));
+
+    if (!editingId) {
+      setFormData({
+        employeeName: '',
+        email: '',
+        phone: '',
+        department: '',
+        designation: '',
+        password: '',
       });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        alert(data.message || 'Success');
-        router.push('/');
-      } else {
-        alert(data.message || 'Something went wrong');
-      }
-    } catch (err) {
-      console.error('Submit error', err);
+    } else {
+      router.push('/'); // go back to home after update
     }
   };
 

@@ -1,7 +1,6 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, Delete, Param, Put } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Get } from '@nestjs/common';
-import { Delete, Param } from '@nestjs/common';
+import { UpdateEmployeeDto } from './dto/update-employee.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -38,7 +37,12 @@ export class AuthController {
   }
 
   @Put('employees/:id')
-  async updateEmployee(@Param('id') id: string, @Body() updateDto: UpdateEmployeeDto) {
-    return this.authService.updateEmployee(id, updateDto);
+  async updateEmployee(
+    @Param('id') id: string,
+    @Body() updateEmployeeDto: UpdateEmployeeDto
+  ) {
+    return this.authService.updateEmployee(id, updateEmployeeDto);
   }
+
+
 }
