@@ -31,7 +31,7 @@ export default function SignUpForm({
     fetchDepartments();
   }, []);
 
-  const designationOptions = ['admin', 'manager', 'qa', 'backend-developer', 'frontend-developer'];
+  const designationOptions = ['admin', 'manager', 'qa', 'developer'];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

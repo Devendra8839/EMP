@@ -15,20 +15,42 @@ datasource db {
 }
 
 model Employee {
-  id           Int        @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   employeeName String
-  email        String     @unique
+  email        String   @unique
   designation  String
   password     String
   phone        String
-  createdAt    DateTime   @default(now())
+  createdAt    DateTime @default(now())
 
   departmentId Int
   department   Department @relation(fields: [departmentId], references: [id])
+
+  attendances Attendance[]
 }
 
 model Department {
   id             Int        @id @default(autoincrement())
   departmentName String     @unique
   employees      Employee[] // 1:N relationship
+}
+
+model Attendance {
+  id               Int              @id @default(autoincrement())
+  employee         Employee         @relation(fields: [employeeId], references: [id])
+  employeeId       Int
+  date             DateTime
+  checkInTime      DateTime?
+  checkOutTime     DateTime?
+  attendanceStatus AttendanceStatus
+
+  @@unique([employeeId, date]) // One attendance per employee per day
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LEAVE
+  REMOTE
+  LATE
 }

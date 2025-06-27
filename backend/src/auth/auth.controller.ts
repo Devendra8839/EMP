@@ -2,6 +2,7 @@ import { Controller, Post, Body, Get, Delete, Param, Put } from '@nestjs/common'
 import { AuthService } from './auth.service';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
+import { CreateAttendanceDto } from './dto/create-attendance.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -46,5 +47,20 @@ export class AuthController {
     return this.authService.updateEmployee(id, updateEmployeeDto);
   }
 
+  @Post('attendance')
+  markAttendance(@Body() dto: CreateAttendanceDto) {
+    return this.authService.markAttendance(dto.employeeId, dto.status);
+  }
+
+  @Post('attendance/checkout/:id')
+  checkOut(@Param('id') id: string) {
+    return this.authService.checkOutAttendance(+id);
+  }
+
+  @Get('me')
+  async getMyDetails() {
+    const employeeId = 1; // 🔧 Temporarily hardcoded for testing
+    return this.authService.getEmployeeWithAttendanceStatus(employeeId);
+  }
 
 }

@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
+import { AttendanceStatus } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -153,5 +154,97 @@ export class AuthService {
       where: { id: parseInt(id) },
       data: updateEmployeeDto,
     });
+  }
+
+  async markAttendance(employeeId: number, status: AttendanceStatus) {
+    const today = new Date();
+    const dateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+    // Check if already marked
+    const existing = await this.prisma.attendance.findUnique({
+      where: {
+        employeeId_date: {
+          employeeId,
+          date: dateOnly,
+        }
+      }
+    });
+
+    if (existing) {
+      // Optionally update status
+      return await this.prisma.attendance.update({
+        where: {
+          employeeId_date: {
+            employeeId,
+            date: dateOnly,
+          }
+        },
+        data: {
+          attendanceStatus: status,
+          checkInTime: new Date(),
+        }
+      });
+    }
+
+    // Create new attendance
+    return await this.prisma.attendance.create({
+      data: {
+        employeeId,
+        date: dateOnly,
+        attendanceStatus: status,
+        checkInTime: new Date(),
+      }
+    });
+  }
+
+  async checkOutAttendance(employeeId: number) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const attendance = await this.prisma.attendance.findFirst({
+      where: {
+        employeeId,
+        date: today,
+      },
+    });
+
+    if (!attendance) {
+      throw new BadRequestException('No attendance found for today.');
+    }
+
+    if (attendance.checkOutTime) {
+      throw new BadRequestException('Already checked out.');
+    }
+
+    return await this.prisma.attendance.update({
+      where: { id: attendance.id },
+      data: { checkOutTime: new Date() },
+    });
+  }
+
+  async getEmployeeWithAttendanceStatus(employeeId: number) {
+    const today = new Date();
+    const dateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+    const employee = await this.prisma.employee.findUnique({
+      where: { id: employeeId },
+      include: {
+        department: true,
+      },
+    });
+
+    const attendance = await this.prisma.attendance.findUnique({
+      where: {
+        employeeId_date: {
+          employeeId,
+          date: dateOnly,
+        }
+      }
+    });
+
+    return {
+      ...employee,
+      attendanceStatus: attendance ? attendance.attendanceStatus : 'Not Marked',
+    };
   }
 }
