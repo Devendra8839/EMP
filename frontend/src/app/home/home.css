@@ -1,0 +1,143 @@
+.wrapper {
+  background-color: #f4f6f8;
+  min-height: 100vh;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+  background-color: #1a202c;
+  color: #fff;
+  flex-wrap: wrap;
+}
+
+.greeting {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.logoutStyle {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #e00;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.main {
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.heading {
+  margin-bottom: 20px;
+}
+
+.filterContainer {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.select {
+  padding: 6px;
+  border-radius: 6px;
+  margin-left: 8px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background-color: #2d3748;
+  color: #fff;
+  padding: 10px;
+  text-align: left;
+}
+
+td {
+  padding: 10px;
+}
+
+.evenRow {
+  background-color: #f7fafc;
+}
+
+.oddRow {
+  background-color: #edf2f7;
+}
+
+.button {
+  padding: 10px 16px;
+  background-color: #3182ce;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+.editButton {
+  background-color: #2b6cb0;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.deleteButton {
+  background-color: #e53e3e;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.attendanceSection {
+  margin-top: 40px;
+  text-align: left;
+}
+
+.radioGroup {
+  margin: 10px 0;
+}
+
+.radioLabel {
+  margin-right: 20px;
+  font-weight: 500;
+}
+
+.leaveButton {
+  padding: 6px 10px;
+  background-color: #805ad5;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 6px;
+}
+
+.statusBadge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.main {
+  color: #2d3748;
+}

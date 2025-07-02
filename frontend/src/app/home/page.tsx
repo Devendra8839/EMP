@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import './home.css';
 
 function toTitleCase(str: string) {
   return str
@@ -164,42 +165,42 @@ export default function HomePage() {
   };
 
   return (
-    <div style={styles.wrapper}>
-      <nav style={styles.nav}>
+    <div className='wrapper' >
+      <nav>
         <div>
-          <div style={styles.greeting}>
+          <div className='greeting' >
             Welcome, {employee?.employeeName && toTitleCase(employee.employeeName)} — {employee?.designation}
           </div>
-          <button onClick={handleLogout} style={styles.logoutStyle}>
+          <button onClick={handleLogout} className='logoutStyle' >
             Logout
           </button>
         </div>
         {isAdmin && (
           <div>
-            <button style={styles.button} onClick={() => router.push('/department/')}>
+            <button className='button'  onClick={() => router.push('/department/')}>
               Create Department
             </button>
-            <button style={styles.button} onClick={() => router.push('/signup/')}>
+            <button className='button'  onClick={() => router.push('/signup/')}>
               Create Employee
             </button>
-            <button style={styles.button} onClick={() => alert('Go to Projects')}>
+            <button className='button'  onClick={() => alert('Go to Projects')}>
               Projects
             </button>
-            <button style={styles.button} onClick={() => alert('Go to Attendance')}>
+            <button className='button'  onClick={() => alert('Go to Attendance')}>
               Attendance
             </button>
           </div>
         )}
       </nav>
 
-      <main style={styles.main}>
-        <h2 style={styles.heading}>{isAdmin ? 'All Employees' : 'Your Details'}</h2>
+      <main className='main' >
+        <h2 className='heading' >{isAdmin ? 'All Employees' : 'Your Details'}</h2>
 
         {isAdmin && (
-          <div style={styles.filterContainer}>
+          <div className='filterContainer' >
             <label>
               Filter by Designation:{' '}
-              <select onChange={(e) => setFilter(e.target.value)} value={filter} style={styles.select}>
+              <select onChange={(e) => setFilter(e.target.value)} value={filter} className='select' >
                 <option value="">All</option>
                 {designations.map((dsgn) => (
                   <option key={dsgn} value={dsgn}>
@@ -211,35 +212,35 @@ export default function HomePage() {
           </div>
         )}
 
-        <table style={styles.table}>
+        <table className='table' >
           <thead>
             <tr>
-              <th style={styles.th}>Name</th>
-              <th style={styles.th}>Email</th>
-              <th style={styles.th}>Phone</th>
-              <th style={styles.th}>Department</th>
-              <th style={styles.th}>Designation</th>
-              <th style={styles.th}>Status</th>
-              {isAdmin && <th style={styles.th}>Actions</th>}
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Department</th>
+              <th>Designation</th>
+              <th>Status</th>
+              {isAdmin && <th>Actions</th>}
             </tr>
           </thead>
           <tbody>
             {filteredEmployees.map((emp, idx) => (
-              <tr key={emp.id} style={idx % 2 === 0 ? styles.evenRow : styles.oddRow}>
-                <td style={styles.td}>{emp.employeeName}</td>
-                <td style={styles.td}>{emp.email}</td>
-                <td style={styles.td}>{emp.phone}</td>
-                <td style={styles.td}>{emp.department?.departmentName || 'N/A'}</td>
-                <td style={styles.td}>{emp.designation}</td>
-                <td style={styles.td}>
-                  <span style={{ ...styles.statusBadge, ...getStatusColor(emp.attendanceStatus) }}>
+              <tr key={emp.id} className={idx % 2 === 0 ? 'evenRow' : 'oddRow'}>
+                <td>{emp.employeeName}</td>
+                <td>{emp.email}</td>
+                <td>{emp.phone}</td>
+                <td>{emp.department?.departmentName || 'N/A'}</td>
+                <td>{emp.designation}</td>
+                <td>
+                  <span className={{ ...'statusBadge', ...getStatusColor(emp.attendanceStatus) }}>
                     {emp.attendanceStatus || 'Not Marked'}
                   </span>
                 </td>
                 {isAdmin && (
-                  <td style={styles.td}>
+                  <td className='td' >
                     <button
-                      style={styles.editButton}
+                      className='editButton' 
                       onClick={() => {
                         localStorage.setItem('editEmployee', JSON.stringify(emp));
                         router.push('/signup');
@@ -248,14 +249,14 @@ export default function HomePage() {
                       Edit
                     </button>
                     <button
-                      style={styles.deleteButton}
+                      className='deleteButton' 
                       onClick={() => handleDelete(emp.id)}
                     >
                       Delete
                     </button>
                     {emp.attendanceStatus !== 'PRESENT' && (
                       <button
-                        style={styles.leaveButton}
+                        className='leaveButton' 
                         onClick={() => markEmployeeLeave(emp.id)}
                       >
                         Mark Leave
@@ -269,7 +270,7 @@ export default function HomePage() {
         </table>
 
         {!isAdmin && (
-          <div style={styles.attendanceSection}>
+          <div className='attendanceSection' >
             <h3>Mark Attendance</h3>
             {employee?.attendanceStatus ? (
               <p style={{ fontWeight: 'bold', color: 'green' }}>
@@ -277,9 +278,9 @@ export default function HomePage() {
               </p>
             ) : (
               <form onSubmit={handleAttendanceSubmit}>
-                <div style={styles.radioGroup}>
+                <div className='radioGroup' >
                   {['PRESENT', 'ABSENT', 'LEAVE'].map((status) => (
-                    <label key={status} style={styles.radioLabel}>
+                    <label key={status} className='radioLabel' >
                       <input
                         type="radio"
                         name="status"
@@ -290,7 +291,7 @@ export default function HomePage() {
                     </label>
                   ))}
                 </div>
-                <button type="submit" style={styles.button}>
+                <button type="submit" className='button' >
                   Submit Attendance
                 </button>
               </form>
@@ -301,125 +302,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-const styles: { [key: string]: React.CSSProperties } = {
-  wrapper: {
-    backgroundColor: '#f4f6f8',
-    minHeight: '100vh',
-  },
-  nav: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    padding: '20px',
-    backgroundColor: '#1a202c',
-    color: '#fff',
-    flexWrap: 'wrap',
-  },
-  greeting: {
-    fontSize: '18px',
-    fontWeight: 500,
-  },
-  logoutStyle: {
-    marginTop: '10px',
-    padding: '8px 12px',
-    backgroundColor: '#e00',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '6px',
-    cursor: 'pointer',
-  },
-  main: {
-    padding: '40px',
-    maxWidth: '1200px',
-    margin: '0 auto',
-    backgroundColor: '#fff',
-    borderRadius: '10px',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-  },
-  heading: {
-    marginBottom: '20px',
-  },
-  filterContainer: {
-    marginBottom: '20px',
-    textAlign: 'left',
-  },
-  select: {
-    padding: '6px',
-    borderRadius: '6px',
-    marginLeft: '8px',
-  },
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-  },
-  th: {
-    backgroundColor: '#2d3748',
-    color: '#fff',
-    padding: '10px',
-    textAlign: 'left',
-  },
-  td: {
-    padding: '10px',
-  },
-  evenRow: {
-    backgroundColor: '#f7fafc',
-  },
-  oddRow: {
-    backgroundColor: '#edf2f7',
-  },
-  button: {
-    padding: '10px 16px',
-    backgroundColor: '#3182ce',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '6px',
-    cursor: 'pointer',
-    marginRight: '10px',
-    marginTop: '10px',
-  },
-  editButton: {
-    backgroundColor: '#2b6cb0',
-    color: 'white',
-    border: 'none',
-    padding: '6px 10px',
-    borderRadius: '5px',
-    marginRight: '8px',
-    cursor: 'pointer',
-  },
-  deleteButton: {
-    backgroundColor: '#e53e3e',
-    color: 'white',
-    border: 'none',
-    padding: '6px 10px',
-    borderRadius: '5px',
-    cursor: 'pointer',
-  },
-  attendanceSection: {
-    marginTop: '40px',
-    textAlign: 'left',
-  },
-  radioGroup: {
-    margin: '10px 0',
-  },
-  radioLabel: {
-    marginRight: '20px',
-    fontWeight: 500,
-  },
-  leaveButton: {
-    padding: '6px 10px',
-    backgroundColor: '#805ad5',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    marginLeft: '6px',
-  },
-  statusBadge: {
-    padding: '4px 8px',
-    borderRadius: '12px',
-    fontSize: '12px',
-    fontWeight: 'bold',
-    display: 'inline-block',
-  },
-};
