@@ -247,4 +247,23 @@ export class AuthService {
       attendanceStatus: attendance ? attendance.attendanceStatus : 'Not Marked',
     };
   }
+
+  async getEmployeeById(id: string) {
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+      throw new BadRequestException('Invalid employee ID');
+    }
+
+    const employee = await this.prisma.employee.findUnique({
+      where: { id: numericId },
+      include: { department: true },
+    });
+
+    if (!employee) {
+      throw new BadRequestException('Employee not found');
+    }
+
+    return employee;
+  }
+
 }

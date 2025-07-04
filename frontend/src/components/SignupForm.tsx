@@ -5,14 +5,16 @@ import { useEffect, useState } from 'react';
 export default function SignUpForm({
   mode,
   employeeData,
+  onSuccess,
 }: {
   mode: 'create' | 'edit';
   employeeData?: any;
+  onSuccess: () => void;
 }) {
   const [employeeName, setEmployeeName] = useState(employeeData?.employeeName || '');
   const [email, setEmail] = useState(employeeData?.email || '');
   const [phone, setPhone] = useState(employeeData?.phone || '');
-  const [password, setPassword] = useState(''); // ✅ Added
+  const [password, setPassword] = useState('');
   const [designation, setDesignation] = useState(employeeData?.designation || '');
   const [department, setDepartment] = useState(employeeData?.department?.id || '');
   const [departments, setDepartments] = useState([]);
@@ -45,7 +47,7 @@ export default function SignUpForm({
     };
 
     if (mode === 'create') {
-      payload.password = password; // ✅ Only send password on create
+      payload.password = password;
     }
 
     const url =
@@ -63,6 +65,11 @@ export default function SignUpForm({
 
     const data = await res.json();
     alert(data.message || 'Success');
+
+    // ✅ Clear form and navigate back
+    if (res.ok && onSuccess) {
+      onSuccess();
+    }
   };
 
   return (
@@ -89,12 +96,9 @@ export default function SignUpForm({
           {mode === 'edit' ? 'Edit Employee' : 'Create Employee'}
         </h2>
 
-        {/* Input Fields */}
-        {[
-          { label: 'Name', value: employeeName, onChange: setEmployeeName },
+        {[{ label: 'Name', value: employeeName, onChange: setEmployeeName },
           { label: 'Email', value: email, onChange: setEmail },
-          { label: 'Phone', value: phone, onChange: setPhone },
-        ].map((field, idx) => (
+          { label: 'Phone', value: phone, onChange: setPhone }].map((field, idx) => (
           <div key={idx} style={{ marginBottom: '1rem' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
               {field.label}
@@ -115,7 +119,6 @@ export default function SignUpForm({
           </div>
         ))}
 
-        {/* ✅ Password Field - only on create */}
         {mode === 'create' && (
           <div style={{ marginBottom: '1rem' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
@@ -137,7 +140,6 @@ export default function SignUpForm({
           </div>
         )}
 
-        {/* Designation */}
         <div style={{ marginBottom: '1rem' }}>
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
             Designation
@@ -163,7 +165,6 @@ export default function SignUpForm({
           </select>
         </div>
 
-        {/* Department */}
         <div style={{ marginBottom: '1rem' }}>
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
             Department

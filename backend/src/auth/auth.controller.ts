@@ -63,4 +63,9 @@ export class AuthController {
     return this.authService.getEmployeeWithAttendanceStatus(employeeId);
   }
 
+  @Get('employees/:id')
+  async getEmployeeById(@Param('id') id: string) {
+    return this.authService.getEmployeeById(id);
+  }
+
 }

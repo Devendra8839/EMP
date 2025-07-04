@@ -179,7 +179,10 @@ export default function HomePage() {
             <button style={styles.button} onClick={() => router.push('/department/')}>
               Create Department
             </button>
-            <button style={styles.button} onClick={() => router.push('/signup/')}>
+            <button
+              style={styles.button}
+              onClick={() => router.push('/create_employee')}
+            >
               Create Employee
             </button>
             <button style={styles.button} onClick={() => alert('Go to Projects')}>
@@ -241,8 +244,7 @@ export default function HomePage() {
                     <button
                       style={styles.editButton}
                       onClick={() => {
-                        localStorage.setItem('editEmployee', JSON.stringify(emp));
-                        router.push('/signup');
+                        router.push(`/edit_employee/${emp.id}`);
                       }}
                     >
                       Edit
