@@ -1,32 +1,102 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  // output   = "../generated/prisma"
 }
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
-model Employee {
-  id          Int     @id @default(autoincrement())
-  employeeName        String
-  email       String  @unique
-  department  String
-  designation String
-  password    String
-  phone       String
-  createdAt   DateTime @default(now())
-}
-
 model Department {
-  id          Int     @id @default(autoincrement())
-  departmentName String @unique
-  createdAt   DateTime @default(now())
+  DepartmentID Int       @id @default(autoincrement())
+  Name         String @unique
+  employees    Employee[]
 }
+model Employee {
+  EmployeeID   Int              @id @default(autoincrement())
+  Name         String
+  Email        String           @unique
+  Phone        String?
+  Designation  String
+  Department   Department       @relation(fields: [DepartmentID], references: [DepartmentID])
+  DepartmentID Int
+  Password     String
+  projects        EmployeeProject[]
+  attendances     Attendance[]
+  leaveRequests   LeaveRequest[]
+  managedProjects Project[]     @relation("ManagerProjects")
+}
+model Project {
+  ProjectID Int       @id @default(autoincrement())
+  Name      String
+  StartDate DateTime
+  EndDate   DateTime
+  Manager   Employee?  @relation("ManagerProjects", fields: [ManagerID], references: [EmployeeID])
+  ManagerID Int?
+  employees EmployeeProject[]
+}
+model EmployeeProject {
+  EmployeeID     Int
+  ProjectID      Int
+  RoleInProject  String
+  employee Employee @relation(fields: [EmployeeID], references: [EmployeeID])
+  project  Project  @relation(fields: [ProjectID], references: [ProjectID])
+  @@id([EmployeeID, ProjectID])
+}
+model Attendance {
+  AttendanceID Int      @id @default(autoincrement())
+  Employee     Employee @relation(fields: [EmployeeID], references: [EmployeeID])
+  EmployeeID   Int
+  Date         DateTime
+  CheckInTime  DateTime?
+  CheckOutTime DateTime?
+  Status       AttendanceStatus
+}
+model LeaveRequest {
+  LeaveID     Int      @id @default(autoincrement())
+  Employee    Employee @relation(fields: [EmployeeID], references: [EmployeeID])
+  EmployeeID  Int
+  StartDate   DateTime
+  EndDate     DateTime
+  LeaveType   LeaveType
+  Status      LeaveStatus
+}
+// Enums
+enum AttendanceStatus {
+  Present
+  Absent
+  Leave
+  Remote
+  Late
+}
+enum LeaveType {
+  Sick
+  Casual
+  Earned
+}
+enum LeaveStatus {
+  Pending
+  Approved
+  Rejected
+}
+model PasswordResetToken {
+  token     String   @id
+  email     String
+  expiresAt DateTime
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

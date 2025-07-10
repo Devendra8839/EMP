@@ -8,7 +8,7 @@ export default function DepartmentPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await fetch('http://localhost:3001/auth/create-department', {
+    const res = await fetch('http://localhost:3003/auth/create-department', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ departmentName }),
@@ -57,6 +57,7 @@ const styles = {
     padding: '10px',
     borderRadius: '6px',
     border: '1px solid #ccc',
+    color: "white"
   },
   button: {
     padding: '10px',

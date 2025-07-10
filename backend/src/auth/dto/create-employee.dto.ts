@@ -14,22 +14,24 @@ export class CreateEmployeeDto {
 
   @IsNotEmpty()
   @IsEmail()
-  email: string;
+  email: string; 
 
   @IsNotEmpty()
   @IsString()
   password: string;
-
+  
   @IsNotEmpty()
   @IsString()
-  phone: string;
+  phone: string; 
 
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Department is required' })
   @IsString()
-  department: string;
+  department: string; 
 
   @IsEnum(DesignationEnum, {
     message: `designation must be one of: ${Object.values(DesignationEnum).join(', ')}`,
   })
-  designation: DesignationEnum;
+  designation: DesignationEnum; 
 }
+
+

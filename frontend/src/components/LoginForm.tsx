@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+
 
 export default function LoginForm() {
   const router = useRouter();
@@ -11,7 +13,7 @@ export default function LoginForm() {
     e.preventDefault();
 
     try {
-      const res = await fetch('http://localhost:3001/auth/login', {
+      const res = await fetch('http://localhost:3003/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -61,6 +63,10 @@ export default function LoginForm() {
         />
 
         <button type="submit" style={styles.button}>Login</button>
+        <p style={styles.forgotPasswordText}>
+          <Link href="/forgot-password">Forgot Password?</Link>
+        </p>
+
       </form>
     </div>
   );
@@ -86,6 +92,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     border: '1px solid #bbb',
     borderRadius: '6px',
     fontSize: '16px',
+    color: 'white',
   },
   button: {
     padding: '10px',
@@ -103,4 +110,17 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: '14px',
     color: 'white',
   },
+  forgotPasswordText: {
+    marginTop: '10px',
+    fontSize: '14px',
+    color: '#0070f3',
+  },
+  error: {
+    color: 'red',
+    marginTop: '10px',
+  },
+  success: {
+    color: 'green',
+    marginTop: '10px',
+  }, 
 };
